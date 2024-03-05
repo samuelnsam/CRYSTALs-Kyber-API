@@ -16,6 +16,10 @@ if os.environ.get('ENVIRONMENT') == 'development':
     url = 'http://localhost:8000/api/kc'
 
 def _fetch_keys():
+    """
+    Generate the key pair and return them as BYTES.
+    No info needed except for the auth token
+    """
     api_url = url + "/generate_keys?auth_token=" + os.environ.get('AUTH_TOKEN')
     response = requests.get(api_url)
     keys = response.json()

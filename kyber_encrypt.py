@@ -23,6 +23,10 @@ if os.environ.get('ENVIRONMENT') == 'development':
     url = 'http://localhost:8000/api/kc'
 
 def _encapsulate_key(pk):
+    """
+    Call the API endpoint to encapsulate the key. 
+    This generates a cipher and a shared key.
+    """
     api_url = url + "/encapsulate_key?pk=" + pk + "&auth_token=" + os.environ.get('AUTH_TOKEN')
     response = requests.get(api_url)
     keys = response.json()
@@ -30,6 +34,10 @@ def _encapsulate_key(pk):
     return bytes.fromhex(keys['cipher']), bytes.fromhex(keys['shared_key'])
 
 def _generate_shared_key_cipher():
+    """
+    Use the public key to generate the cipher and shared key.
+    Includes calling the API endpoint to do so.
+    """
     public_path = args.public
     p_key =  open(public_path, "r").read()
     cipher, key = _encapsulate_key(p_key)
@@ -47,16 +55,15 @@ def _store_cipher(cipher):
     print('Stored cipher successfully')
 
 def _encrypt_text(text, shared_key): 
+    # Use AES and the shared secret to encrypt data.
     iv = secrets.token_bytes(16)
 
     cipher = Cipher(algorithms.AES(shared_key), modes.CBC(iv), backend=default_backend())
     encryptor = cipher.encryptor()
     
-    # Pad the message
     padder = padding.PKCS7(algorithms.AES.block_size).padder()
     padded_message = padder.update(text.encode()) + padder.finalize()
     
-    # Encrypt the padded message
     ciphertext = encryptor.update(padded_message) + encryptor.finalize()
     
     return (iv + ciphertext).hex()
@@ -75,6 +82,7 @@ def _encrypt_file(file, shared_key):
     return encrypted_content
 
 def encrypt():
+    # Putting it all together
     shared_key = _generate_shared_key_cipher()
 
     text = args.text
@@ -90,6 +98,7 @@ def encrypt():
     return encrypted_text
 
 if __name__ == "__main__":
+    # Can only encrypt a text or a file, not both
     if(args.text != None and args.file != None):
         sys.exit('Error: you can only encrypt a file or text, not both')
     if args.store_encrypted == None or args.public == None or args.cipher == None or args.text == None and args.file == None:
