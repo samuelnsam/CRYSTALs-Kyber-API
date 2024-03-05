@@ -2,7 +2,7 @@
 
 This code implements an end-to-end encryption using CRYSTALs-Kyber. It generates the keys using ExeQ's API as well as encapsulates and decapsulates the keys for AES encryption. 
 
-### This code does NOT concern about key storage security, nor does it worry about breakibility of the cipher message. It is only for demo and trial purposes.
+### This code does NOT concern about key storage security, nor does it worry about breakibility of the cipher message or verify key origin. It is only for demo and trial purposes.
 
 ## How does CRYSTALs-Kyber works?
 
