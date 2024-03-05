@@ -6,7 +6,7 @@ This code implements an end-to-end encryption using CRYSTALs-Kyber. It generates
 
 ## How does CRYSTALs-Kyber works?
 
-CRYSTALs-Kyber does not perform the encryption itself. Instead, it generates a public and private key pair, which is then used to *encapsulate* and *decapsulate* the cipher to generate a shared secret that only the receive and recipient hold.
+CRYSTALs-Kyber does not perform the encryption itself. Instead, it generates a public and private key pair, which is then used to *encapsulate* and *decapsulate* the cipher to generate a shared secret that only the message sender and recipient hold.
 
 <img width="426" alt="Screenshot 2024-03-05 at 1 12 47 pm" src="https://github.com/samuelnsam/CRYSTALs-Kyber-API/assets/87163496/54d41911-634d-437d-ac77-ca4d57e070c9">
 
