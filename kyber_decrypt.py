@@ -26,8 +26,8 @@ def _decapsulate_key(cipher, s_key):
     Call the API endpoint to decapsulate key and get the BYTES version of it.
     Needs the private key and cipher
     """
-    api_url = url + "/decapsulate_key?sk=" + s_key + "&cipher=" + cipher + "&auth_token=" + os.environ.get('AUTH_TOKEN')
-    response = requests.get(api_url)
+    api_url = url + "/decapsulate_key?sk=" + s_key + "&cipher=" + cipher
+    response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
     keys = response.json()
 
     return bytes.fromhex(keys['shared_key'])
@@ -78,7 +78,7 @@ def _store_decrypted_text(text, text_path):
     f = open(text_path, "w")
     f.write(text)
     f.close()
-    print('Encrypted text stored successfully')
+    print('Decrypted text stored successfully')
 
 def decrypt(): 
     # Collect it all together

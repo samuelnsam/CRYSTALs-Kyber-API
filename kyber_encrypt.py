@@ -27,8 +27,8 @@ def _encapsulate_key(pk):
     Call the API endpoint to encapsulate the key. 
     This generates a cipher and a shared key.
     """
-    api_url = url + "/encapsulate_key?pk=" + pk + "&auth_token=" + os.environ.get('AUTH_TOKEN')
-    response = requests.get(api_url)
+    api_url = url + "/encapsulate_key?pk=" + pk
+    response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
     keys = response.json()
     
     return bytes.fromhex(keys['cipher']), bytes.fromhex(keys['shared_key'])

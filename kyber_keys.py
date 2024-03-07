@@ -20,8 +20,8 @@ def _fetch_keys():
     Generate the key pair and return them as BYTES.
     No info needed except for the auth token
     """
-    api_url = url + "/generate_keys?auth_token=" + os.environ.get('AUTH_TOKEN')
-    response = requests.get(api_url)
+    api_url = url + "/generate_keys"
+    response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
     keys = response.json()
     
     return bytes.fromhex(keys['pk']), bytes.fromhex(keys['sk'])
