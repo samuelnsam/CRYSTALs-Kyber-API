@@ -11,6 +11,8 @@ parser=argparse.ArgumentParser()
 
 parser.add_argument("-cipher", help="Specify path to store the cipher")
 parser.add_argument("-public", help="Specify path to read the public key")
+parser.add_argument("-signature", help="The path signature to confirm key origin")
+parser.add_argument("-verif_key", help="The path to key to confirm key origin")
 parser.add_argument("-text", help="Specify text to encrypt (if not file)")
 parser.add_argument("-file", help="Specify file to encrypt (if not text)")
 parser.add_argument("-store_encrypted", help="Where to store the encrypted text")
@@ -22,15 +24,15 @@ url = 'https://www.exequantum.com/api/kc'
 if os.environ.get('ENVIRONMENT') == 'development':
     url = 'http://localhost:8000/api/kc'
 
-def _encapsulate_key(pk):
+def _encapsulate_key(pk, signature, verify_key):
     """
-    Call the API endpoint to encapsulate the key. 
-    This generates a cipher and a shared key.
+    Call the API endpoint to encapsulate the key, using the public key and signature for verification. 
+    This generates a cipher and a shared key if the origin of the key is verified.
     """
-    api_url = url + "/encapsulate_key?pk=" + pk
-    response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
+    api_url = url + "/encapsulate_key"
+    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={ 'verif_key': verify_key, 'pk': pk, 'signature': signature })
     keys = response.json()
-    
+    print(keys)
     return bytes.fromhex(keys['cipher']), bytes.fromhex(keys['shared_key'])
 
 def _generate_shared_key_cipher():
@@ -39,8 +41,12 @@ def _generate_shared_key_cipher():
     Includes calling the API endpoint to do so.
     """
     public_path = args.public
-    p_key =  open(public_path, "r").read()
-    cipher, key = _encapsulate_key(p_key)
+    p_key = open(public_path, "r").read()
+    sig_path = args.signature
+    signature = open(sig_path, "r").read()
+    verif_key_path = args.verif_key
+    verif_key = open(verif_key_path, "r").read()
+    cipher, key = _encapsulate_key(p_key, signature, verif_key)
     _store_cipher(cipher)    
     return key
 

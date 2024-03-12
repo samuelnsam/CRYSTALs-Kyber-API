@@ -26,8 +26,8 @@ def _decapsulate_key(cipher, s_key):
     Call the API endpoint to decapsulate key and get the BYTES version of it.
     Needs the private key and cipher
     """
-    api_url = url + "/decapsulate_key?sk=" + s_key + "&cipher=" + cipher
-    response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
+    api_url = url + "/decapsulate_key"
+    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher, 'sk': s_key})
     keys = response.json()
 
     return bytes.fromhex(keys['shared_key'])

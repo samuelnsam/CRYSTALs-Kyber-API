@@ -5,3 +5,5 @@
 /cipher
 kyber_lib/__pycache__
 /decrypted
+/signature
+/verif_key
