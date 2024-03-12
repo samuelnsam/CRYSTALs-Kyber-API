@@ -40,21 +40,21 @@ This command will be ran by the message *receiver* to send the public key to the
 To encapsulate the key and generate a shared secret to use to encrypt a text, run the following command:
 
 ```
-python kyber_encrypt.py -cipher cipher/check_cipher.txt -text 'your text' -store_encrypted encrypted/encrypted.txt -public public/public_key.txt
+python kyber_keys.py -public public/public_key.txt -private private/private_key.key -verif_signature signature/signature.txt -verif_key verif_key/verif_key.txt                                            
 ```
 
 This is ran by the message *sender*, who will use the generated shared secret from the encapsulated key to encrypt the message and send it with a cipher for decapsulation.
 
 If you want it to instead encrypt a text file, use:
 ```
-python kyber_encrypt.py -cipher cipher/check_cipher.txt -file path/to/your/file -store_encrypted encrypted/encrypted.txt -public public/public_key.txt
+python kyber_encrypt.py -cipher cipher/cipher.txt -public public/public_key.txt -file path/to/your/file -store_encrypted encrypted/message.txt -signature signature/signature.txt -verif_key verif_key/verif_key.txt
 ```
 
 This reads the public key from where it was stored, stores the cipher in the chosen destination, and stores the encrypted file/text in the chosen destination.
 
 To decapsulate the key and use it to decrypt the the message run:
 ```
-python kyber_decrypt.py -cipher cipher/check_cipher.txt -private private/private.key -file encrypted/encrypted.txt -store_decrypted decrypted/decrypted.txt
+python kyber_decrypt.py -cipher cipher/cipher.txt -private private/private_key.key -file encrypted/message.txt -store_decrypted decrypted/message_plain.txt                                              
 ```
 
 The *receiver* runs this command. Using the private key they never shared with the sender, as well as the cipher that was sent back by the sender, the receiver can decapsulate the key to generate the shared secret that can be used to decrypt the message.
