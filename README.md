@@ -1,6 +1,6 @@
 # CRYSTALS-Kyber API Endpoint
 
-This code implements an end-to-end encryption using CRYSTALs-Kyber. It generates the keys using ExeQ's API as well as encapsulates and decapsulates the keys for AES encryption. 
+This code implements an end-to-end encryption using CRYSTALS-Kyber and signs the keys using CRYSTALS-Dilithium. It generates the keys using ExeQ's API as well as encapsulates and decapsulates the keys for AES encryption. 
 
 ### Please use this code only for demo and trial purposes, not for practical production security.
 ### This API requires an auth token to be used. Please reach out to me for a token to try out this API.
