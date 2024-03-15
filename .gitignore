@@ -1,9 +1,0 @@
-.env
-/encrypted
-/private
-/public
-/cipher
-kyber_lib/__pycache__
-/decrypted
-/signature
-/verif_key
