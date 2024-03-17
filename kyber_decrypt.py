@@ -2,9 +2,8 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import padding
 import argparse
-import os, sys, io
+import os, sys
 import requests
-import PIL.Image as Image
 from dotenv import load_dotenv
 load_dotenv()
 parser=argparse.ArgumentParser()
@@ -12,7 +11,6 @@ parser=argparse.ArgumentParser()
 parser.add_argument("-cipher", help="Specify path to read the padding cipher")
 parser.add_argument("-text", help="Specify text to decrypt (if not file)")
 parser.add_argument("-file", help="Specify file to decrypt (if not text)")
-parser.add_argument("-image", help="Specify image to decrypt (if not others)")
 parser.add_argument("-store_decrypted", help="Where to store the decrypted text")
 
 args=parser.parse_args()
@@ -61,12 +59,10 @@ def _decrypt_text(ciphertext):
     unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
     unpadded_message = unpadder.update(decrypted_message) + unpadder.finalize()
 
-    # Images shouldn't be decoded for decryption, so different use case
-    if(args.image != None):
-        image = Image.open(io.BytesIO(unpadded_message))
-        return image
-    else:
+    try:
         return unpadded_message.decode()
+    except:
+        return unpadded_message
 
 def _decrypt_file(ciphertext_path):
     text = bytes.fromhex(open(ciphertext_path, "r").read())
@@ -80,23 +76,27 @@ def _store_decrypted_text(text, text_path):
     f.close()
     print('Decrypted text stored successfully')
     
-def _store_decrypted_image(image, image_path):
-    image.save(image_path)
+def _store_decrypted_file(file, file_path):
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    
+    with open(file_path, "wb") as binary_file:
+        binary_file.write(file)
+    print('Decrypted non-text file stored successfully')
     
 def decrypt(): 
     # Collect it all together
     text = args.text
     file = args.file
-    image = args.image 
     
     text_path = args.store_decrypted
 
     if text != None:
         _store_decrypted_text(_decrypt_text(text), text_path) 
     if file != None:
-        _store_decrypted_text(_decrypt_file(file), text_path) 
-    if image != None:
-        _store_decrypted_image(_decrypt_file(image), text_path) 
+        if len(file.split('.')) != 1 and file.split('.')[1] == 'txt':
+            _store_decrypted_text(_decrypt_file(file), text_path) 
+        else:
+            _store_decrypted_file(_decrypt_file(file), text_path) 
         
     return 'Success'
 
@@ -104,6 +104,6 @@ if __name__ == "__main__":
     # Can't decrypt both text and file. Must choose one or the other
     if(args.text != None and args.file != None):
         sys.exit('Error: you can only encrypt a file or text, not both')
-    if args.store_decrypted == None or args.cipher == None or args.text == None and args.file == None and args.image == None:
-        sys.exit('Error: please make sure to specify path for cipher (-cipher), public key (-public_path), where to store the decrypted text (-store_decrypted) and a file, image, or text to decrypt')
+    if args.store_decrypted == None or args.cipher == None or args.text == None and args.file == None:
+        sys.exit('Error: please make sure to specify path for cipher (-cipher), public key (-public_path), where to store the decrypted text (-store_decrypted) and a file or text to decrypt')
     decrypt()  
