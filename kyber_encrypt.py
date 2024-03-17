@@ -68,7 +68,7 @@ def _encrypt_text(text, shared_key):
     encryptor = cipher.encryptor()
     
     padder = padding.PKCS7(algorithms.AES.block_size).padder()
-    padded_message = padder.update(text.encode()) + padder.finalize()
+    padded_message = padder.update(text) + padder.finalize()
     
     ciphertext = encryptor.update(padded_message) + encryptor.finalize()
     
@@ -82,7 +82,9 @@ def _store_encrypted_text(enc_text, path):
     print('Encrypted text stored successfully')
 
 def _encrypt_file(file, shared_key):
-    plain_file = open(file, "r").read()
+    with open(file,'rb') as f:
+        plain_file = f.read()
+
     encrypted_content = _encrypt_text(plain_file, shared_key)
 
     return encrypted_content
@@ -94,7 +96,7 @@ def encrypt():
     text = args.text
     file = args.file
     if text != None:
-        encrypted_text = _encrypt_text(text, shared_key)
+        encrypted_text = _encrypt_text(text.encode(), shared_key)
     if file != None:
         encrypted_text = _encrypt_file(file, shared_key)
 
