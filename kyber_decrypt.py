@@ -9,6 +9,7 @@ load_dotenv()
 parser=argparse.ArgumentParser()
 
 parser.add_argument("-cipher", help="Specify path to read the padding cipher")
+parser.add_argument("-public", help="Specify path to read the public key")
 parser.add_argument("-text", help="Specify text to decrypt (if not file)")
 parser.add_argument("-file", help="Specify file to decrypt (if not text)")
 parser.add_argument("-store_decrypted", help="Where to store the decrypted text")
@@ -26,7 +27,7 @@ def _decapsulate_key(cipher):
     Needs the private key and cipher
     """
     api_url = url + "/decapsulate_key"
-    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher})
+    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher, 'pk': open(args.public, "r").read()})
     keys = response.json()
 
     return bytes.fromhex(keys['shared_key'])
