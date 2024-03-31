@@ -24,7 +24,7 @@ def _fetch_keys():
     api_url = url + "/generate_keys"
     response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
     keys = response.json()
-    print(keys)
+
     return bytes.fromhex(keys['pk']), bytes.fromhex(keys['verification_key']), bytes.fromhex(keys['verification_signature'])
 
 def _store_public_key(public_key, public_path):

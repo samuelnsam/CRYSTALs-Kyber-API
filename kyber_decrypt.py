@@ -9,6 +9,7 @@ load_dotenv()
 parser=argparse.ArgumentParser()
 
 parser.add_argument("-cipher", help="Specify path to read the padding cipher")
+parser.add_argument("-public", help="Specify path to read the public key")
 parser.add_argument("-text", help="Specify text to decrypt (if not file)")
 parser.add_argument("-file", help="Specify file to decrypt (if not text)")
 parser.add_argument("-store_decrypted", help="Where to store the decrypted text")
@@ -28,7 +29,7 @@ def _decapsulate_key(cipher):
     Needs the private key and cipher
     """
     api_url = kc_url + "/decapsulate_key"
-    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher})
+    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher, 'pk': open(args.public, "r").read()})
     keys = response.json()
 
     return bytes.fromhex(keys['shared_key'])
@@ -50,11 +51,9 @@ def _read_cipher():
 def _decrypt_text(ciphertext):
     # Use AES to decrypt test using the private key and cipher
     cipher = _read_cipher()
-    print(ciphertext)
-    print(cipher)
     shared_key = _generate_secret_from_private(cipher)
 
-    return requests.post(aes_url + '/decrypt_text', headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'ciphertext': ciphertext, 'key': shared_key.hex()})
+    return requests.post(aes_url + '/decrypt_text', headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'ciphertext': ciphertext, 'key': shared_key.hex()}).json()
 
 def _decrypt_file(ciphertext_path):
     text = open(ciphertext_path, "r").read()
@@ -67,19 +66,29 @@ def _store_decrypted_text(text, text_path):
     f.write(text)
     f.close()
     print('Decrypted text stored successfully')
-
+    
+def _store_decrypted_file(file, file_path):
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    
+    with open(file_path, "wb") as binary_file:
+        binary_file.write(file)
+    print('Decrypted non-text file stored successfully')
+    
 def decrypt(): 
     # Collect it all together
     text = args.text
     file = args.file
-
+    
     text_path = args.store_decrypted
 
     if text != None:
         _store_decrypted_text(_decrypt_text(text), text_path) 
     if file != None:
-        _store_decrypted_text(_decrypt_file(file), text_path) 
-
+        if len(file.split('.')) != 1 and file.split('.')[1] == 'txt':
+            _store_decrypted_text(_decrypt_file(file), text_path) 
+        else:
+            _store_decrypted_file(_decrypt_file(file), text_path) 
+        
     return 'Success'
 
 if __name__ == "__main__":

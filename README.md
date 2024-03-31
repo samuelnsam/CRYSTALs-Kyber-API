@@ -1,18 +1,19 @@
-# CRYSTALs-Kyber API Endpoint
+# CRYSTALS-Kyber API Endpoint
 
-This code implements an end-to-end encryption using CRYSTALs-Kyber. It generates the keys using ExeQ's API as well as encapsulates and decapsulates the keys for AES encryption. 
+This code implements an end-to-end encryption using CRYSTALS-Kyber and signs the keys using CRYSTALS-Dilithium. It generates the keys using ExeQ's API as well as encapsulates and decapsulates the keys for AES encryption. 
 
-### This code does NOT concern about key storage security, nor does it worry about breakibility of the cipher message or verify key origin. It is only for demo and trial purposes.
+### Please use this code only for demo and trial purposes, not for practical production security.
+### This API requires an auth token to be used. Please reach out to me for a token to try out this API.
 
-## How does CRYSTALs-Kyber works?
+## How does CRYSTALS-Kyber works?
 
-CRYSTALs-Kyber does not perform the encryption itself. Instead, it generates a public and private key pair, which is then used to *encapsulate* and *decapsulate* the cipher to generate a shared secret that only the message sender and recipient hold.
+CRYSTALS-Kyber does not perform the encryption itself. Instead, it generates a public and private key pair, which is then used to *encapsulate* and *decapsulate* the cipher to generate a shared secret that only the message sender and recipient hold.
 
 <img width="426" alt="Screenshot 2024-03-05 at 1 12 47 pm" src="https://github.com/samuelnsam/CRYSTALs-Kyber-API/assets/87163496/54d41911-634d-437d-ac77-ca4d57e070c9">
 
 ## What does this code do?
 
-This code allows users who have the API token to access ExeQ's API to generate a key pair and encasulate and decapsulate the keys. It also uses AES encryption with the shared key to encrypt and decrypt the message.
+This code allows users who have the API token to access ExeQ's API to generate a key pair and encasulate and decapsulate the keys. It also uses AES encryption with the shared key to encrypt and decrypt the message. It uses CRYSTALS-Dilithium to sign the public key and ensure origin.
 
 ## How do I use this code?
 
