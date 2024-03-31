@@ -15,17 +15,19 @@ parser.add_argument("-store_decrypted", help="Where to store the decrypted text"
 
 args=parser.parse_args()
 
-url = 'https://www.exequantum.com/api/kc'
+kc_url = 'https://www.exequantum.com/api/kc'
+aes_url = 'https://www.exequantum.com/api/aes'
 
 if os.environ.get('ENVIRONMENT') == 'development':
-    url = 'http://localhost:8000/api/kc'
+    kc_url = 'http://localhost:8000/api/kc'
+    aes_url = 'http://localhost:8000/api/aes'
 
 def _decapsulate_key(cipher):
     """
     Call the API endpoint to decapsulate key and get the BYTES version of it.
     Needs the private key and cipher
     """
-    api_url = url + "/decapsulate_key"
+    api_url = kc_url + "/decapsulate_key"
     response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher})
     keys = response.json()
 
@@ -47,22 +49,15 @@ def _read_cipher():
 
 def _decrypt_text(ciphertext):
     # Use AES to decrypt test using the private key and cipher
-    iv = ciphertext[:16]
     cipher = _read_cipher()
+    print(ciphertext)
+    print(cipher)
     shared_key = _generate_secret_from_private(cipher)
 
-    cipher = Cipher(algorithms.AES(shared_key), modes.CBC(iv), backend=default_backend())
-    decryptor = cipher.decryptor()
-    
-    decrypted_message = decryptor.update(ciphertext[16:]) + decryptor.finalize()
-    
-    unpadder = padding.PKCS7(algorithms.AES.block_size).unpadder()
-    unpadded_message = unpadder.update(decrypted_message) + unpadder.finalize()
-
-    return unpadded_message.decode()
+    return requests.post(aes_url + '/decrypt_text', headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'ciphertext': ciphertext, 'key': shared_key.hex()})
 
 def _decrypt_file(ciphertext_path):
-    text = bytes.fromhex(open(ciphertext_path, "r").read())
+    text = open(ciphertext_path, "r").read()
    
     return _decrypt_text(text)
     

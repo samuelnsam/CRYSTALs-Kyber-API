@@ -20,9 +20,11 @@ parser.add_argument("-store_encrypted", help="Where to store the encrypted text"
 args=parser.parse_args()
 
 url = 'https://www.exequantum.com/api/kc'
+es_url = 'https://www.exequantum.com/api/aes'
 
 if os.environ.get('ENVIRONMENT') == 'development':
-    url = 'http://localhost:8000/api/kc'
+    kc_url = 'http://localhost:8000/api/kc'
+    aes_url = 'http://localhost:8000/api/aes'
 
 def _encapsulate_key(pk, signature, verify_key):
     """
@@ -61,18 +63,8 @@ def _store_cipher(cipher):
     print('Stored cipher successfully')
 
 def _encrypt_text(text, shared_key): 
-    # Use AES and the shared secret to encrypt data.
-    iv = secrets.token_bytes(16)
 
-    cipher = Cipher(algorithms.AES(shared_key), modes.CBC(iv), backend=default_backend())
-    encryptor = cipher.encryptor()
-    
-    padder = padding.PKCS7(algorithms.AES.block_size).padder()
-    padded_message = padder.update(text.encode()) + padder.finalize()
-    
-    ciphertext = encryptor.update(padded_message) + encryptor.finalize()
-    
-    return (iv + ciphertext).hex()
+    return requests.post(aes_url + '/encrypt_text', headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'unencrypted': text, 'key': shared_key.hex()}).json()
 
 def _store_encrypted_text(enc_text, path):
     os.makedirs(os.path.dirname(path), exist_ok=True)
