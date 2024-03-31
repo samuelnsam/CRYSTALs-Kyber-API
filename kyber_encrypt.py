@@ -88,7 +88,7 @@ def encrypt():
     text = args.text
     file = args.file
     if text != None:
-        encrypted_text = _encrypt_text(text, shared_key)
+        encrypted_text = _encrypt_text(text.encode(), shared_key)
     if file != None:
         encrypted_text = _encrypt_file(file, shared_key)
 
