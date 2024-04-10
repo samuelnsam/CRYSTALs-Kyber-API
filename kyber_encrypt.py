@@ -19,7 +19,7 @@ parser.add_argument("-store_encrypted", help="Where to store the encrypted text"
 
 args=parser.parse_args()
 
-url = 'https://www.exequantum.com/api/kc'
+kc_url = 'https://www.exequantum.com/api/kc'
 es_url = 'https://www.exequantum.com/api/aes'
 
 if os.environ.get('ENVIRONMENT') == 'development':
