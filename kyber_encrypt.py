@@ -34,7 +34,6 @@ def _encapsulate_key(pk, signature, verify_key):
     api_url = kc_url + "/encapsulate_key"
     response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={ 'verif_key': verify_key, 'pk': pk, 'signature': signature })
     keys = response.json()
-    print(keys)
     return bytes.fromhex(keys['cipher']), bytes.fromhex(keys['shared_key'])
 
 def _generate_shared_key_cipher():
