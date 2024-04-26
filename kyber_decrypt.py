@@ -5,6 +5,7 @@ import argparse
 import os, sys
 import requests
 from dotenv import load_dotenv
+import pdb
 load_dotenv()
 parser=argparse.ArgumentParser()
 
@@ -29,7 +30,8 @@ def _decapsulate_key(cipher):
     Needs the private key and cipher
     """
     api_url = kc_url + "/decapsulate_key"
-    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher, 'pk': open(args.public, "r").read()})
+
+    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher.hex(), 'pk': open(args.public, "r").read()})
     keys = response.json()
 
     return bytes.fromhex(keys['shared_key'])
@@ -51,13 +53,14 @@ def _read_cipher():
 def _decrypt_text(ciphertext):
     # Use AES to decrypt test using the private key and cipher
     cipher = _read_cipher()
-    shared_key = _generate_secret_from_private(cipher)
+
+    shared_key = _generate_secret_from_private(bytes.fromhex(cipher)) 
 
     return requests.post(aes_url + '/decrypt_text', headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'ciphertext': ciphertext, 'key': shared_key.hex()}).json()
 
 def _decrypt_file(ciphertext_path):
     text = open(ciphertext_path, "r").read()
-   
+
     return _decrypt_text(text)
     
 def _store_decrypted_text(text, text_path):
@@ -87,7 +90,7 @@ def decrypt():
         if len(file.split('.')) != 1 and file.split('.')[1] == 'txt':
             _store_decrypted_text(_decrypt_file(file), text_path) 
         else:
-            _store_decrypted_file(_decrypt_file(file), text_path) 
+            _store_decrypted_file(bytes.fromhex(_decrypt_file(file)), text_path) 
         
     return 'Success'
 

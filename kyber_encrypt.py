@@ -76,7 +76,7 @@ def _encrypt_file(file, shared_key):
     with open(file,'rb') as f:
         plain_file = f.read()
 
-    encrypted_content = _encrypt_text(plain_file, shared_key)
+    encrypted_content = _encrypt_text(plain_file.hex(), shared_key)
 
     return encrypted_content
 
