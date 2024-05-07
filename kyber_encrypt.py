@@ -1,11 +1,8 @@
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import padding
-import secrets
 import requests
 import argparse
 import os, sys
 from dotenv import load_dotenv
+
 load_dotenv()
 parser=argparse.ArgumentParser()
 
