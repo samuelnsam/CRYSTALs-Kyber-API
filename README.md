@@ -55,7 +55,7 @@ This reads the public key from where it was stored, stores the cipher in the cho
 
 To decapsulate the key and use it to decrypt the the message run:
 ```
-python kyber_decrypt.py -cipher cipher/cipher.txt -file encrypted/message.txt -store_decrypted decrypted/message_plain.txt                                              
+python kyber_decrypt.py -cipher cipher/cipher.txt -file encrypted/message.txt -store_decrypted decrypted/message_plain.txt -public public/public_key.txt                                            
 ```
 
 The *receiver* runs this command. Using the private key they never shared with the sender, as well as the cipher that was sent back by the sender, the receiver can decapsulate the key to generate the shared secret that can be used to decrypt the message.
