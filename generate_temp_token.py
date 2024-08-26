@@ -17,7 +17,7 @@ if os.environ.get('ENVIRONMENT') == 'development':
 
 def _fetch_token():
     """
-    Generate the key pair and return them as BYTES.
+    Generate the temporary token and return them as HEX.
     No info needed except for the auth token
     """
     api_url = url + "/new"
@@ -42,5 +42,5 @@ def generate_keys():
     
 if __name__ == "__main__":
     if args.token == None:
-        sys.exit('Error: please make sure to specify path for the token key (-token), verification signature (-verif_signature) and verification key (-verif_key)')
+        sys.exit('Error: please make sure to specify path for the token key (-token)')
     generate_keys()

@@ -18,8 +18,8 @@ if os.environ.get('ENVIRONMENT') == 'development':
 
 def _fetch_keys():
     """
-    Generate the key pair and return them as BYTES.
-    No info needed except for the auth token
+    Generate the key pair and return them as HEX.
+    No info needed except for the auth or temporary token
     """
     api_url = url + "/generate_keys"
     response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
