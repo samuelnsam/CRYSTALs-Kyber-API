@@ -14,11 +14,11 @@ parser.add_argument("-store_decrypted", help="Where to store the decrypted text"
 
 args=parser.parse_args()
 
-kc_url = 'https://www.exequantum.com/api/kc'
+kc_url = 'https://www.exequantum.com/api/kem'
 aes_url = 'https://www.exequantum.com/api/aes'
 
 if os.environ.get('ENVIRONMENT') == 'development':
-    kc_url = 'http://localhost:8000/api/kc'
+    kc_url = 'http://localhost:8000/api/kem'
     aes_url = 'http://localhost:8000/api/aes'
 
 def _decapsulate_key(cipher):
