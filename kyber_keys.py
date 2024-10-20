@@ -12,7 +12,7 @@ parser.add_argument("-verif_key", help="Specify path to store the private key")
 
 args=parser.parse_args()
 
-url = 'https://www.exequantum.com/api/kem'
+url = 'https://api.exequantum.com/api/kem'
 
 if os.environ.get('ENVIRONMENT') == 'development':
     url = 'http://localhost:8000/api/kem'

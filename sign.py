@@ -12,7 +12,7 @@ parser.add_argument("-signature", help="Specify path to store the signature")
 
 args=parser.parse_args()
 
-url = 'https://www.exequantum.com/api/signature'
+url = 'https://api.exequantum.com/api/signature'
 
 if os.environ.get('ENVIRONMENT') == 'development':
     url = 'http://localhost:8000/api/signature'

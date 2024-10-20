@@ -10,7 +10,7 @@ parser.add_argument("-token", help="Specify path to store the temporary token")
 
 args=parser.parse_args()
 
-url = 'https://www.exequantum.com/api/token'
+url = 'https://api.exequantum.com/api/token'
 
 if os.environ.get('ENVIRONMENT') == 'development':
     url = 'http://localhost:8000/api/token'
