@@ -6,6 +6,7 @@ load_dotenv()
 parser=argparse.ArgumentParser()
 
 parser.add_argument("-public", help="Specify path to store the public key")
+parser.add_argument("-secret", help="Specify path to store the secret key")
 parser.add_argument("-verif_signature", help="Specify path to store the verification signature")
 parser.add_argument("-verif_key", help="Specify path to store the private key")
 
@@ -25,7 +26,7 @@ def _fetch_keys():
     response = requests.get(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') })
     keys = response.json()
 
-    return bytes.fromhex(keys['pk']), bytes.fromhex(keys['verification_key']), bytes.fromhex(keys['verification_signature'])
+    return bytes.fromhex(keys['pk']), bytes.fromhex(keys['sk']),bytes.fromhex(keys['verification_key']), bytes.fromhex(keys['verification_signature'])
 
 def _store_public_key(public_key, public_path):
     os.makedirs(os.path.dirname(public_path), exist_ok=True)
@@ -35,6 +36,15 @@ def _store_public_key(public_key, public_path):
     f.write(public_key.hex())
     f.close()
     print('Stored public key successfully')
+
+def _store_secret_key(secret_key, secret_path):
+    os.makedirs(os.path.dirname(secret_path), exist_ok=True)
+    # Where the secret_key is stored is subject to change based on use case.
+    # The secret key IS sensitive information and therefore needs extra security when stored.
+    f = open(secret_path, "w")
+    f.write(secret_key.hex())
+    f.close()
+    print('Stored secret key successfully')
     
 def _store_verification_signature(signature, sig_path):
     # Where the verification signature is stored is subject to change based on use case.
@@ -55,9 +65,11 @@ def _store_verification_key(signature, sig_path):
     print('Stored verification signature successfully')
 
 def generate_keys():
-    public_key, verif_key, signature = _fetch_keys()
+    public_key, secret_key, verif_key, signature = _fetch_keys()
     public_path = args.public
     _store_public_key(public_key, public_path)
+    
+    _store_secret_key(secret_key, args.secret)
     
     _store_verification_signature(signature, args.verif_signature)
     

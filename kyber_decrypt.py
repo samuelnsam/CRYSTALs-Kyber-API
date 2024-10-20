@@ -7,7 +7,7 @@ load_dotenv()
 parser=argparse.ArgumentParser()
 
 parser.add_argument("-cipher", help="Specify path to read the padding cipher")
-parser.add_argument("-public", help="Specify path to read the public key")
+parser.add_argument("-secret", help="Specify path to read the secret key")
 parser.add_argument("-text", help="Specify text to decrypt (if not file)")
 parser.add_argument("-file", help="Specify file to decrypt (if not text)")
 parser.add_argument("-store_decrypted", help="Where to store the decrypted text")
@@ -28,7 +28,7 @@ def _decapsulate_key(cipher):
     """
     api_url = kc_url + "/decapsulate_key"
 
-    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher.hex(), 'pk': open(args.public, "r").read()})
+    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={'cipher': cipher.hex(), 'sk': open(args.secret, "r").read()})
     keys = response.json()
 
     return bytes.fromhex(keys['shared_key'])
@@ -96,5 +96,5 @@ if __name__ == "__main__":
     if(args.text != None and args.file != None):
         sys.exit('Error: you can only encrypt a file or text, not both')
     if args.store_decrypted == None or args.cipher == None or args.text == None and args.file == None:
-        sys.exit('Error: please make sure to specify path for cipher (-cipher), public key (-public_path), where to store the decrypted text (-store_decrypted) and a file or text to decrypt')
+        sys.exit('Error: please make sure to specify path for cipher (-cipher), secret key (-secret_path), where to store the decrypted text (-store_decrypted) and a file or text to decrypt')
     decrypt()  
