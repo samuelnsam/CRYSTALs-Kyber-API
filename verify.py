@@ -16,9 +16,9 @@ url = 'https://api.exequantum.com/api/signature'
 if os.environ.get('ENVIRONMENT') == 'development':
     url = 'http://localhost:8000/api/signature'
 
-def _verify(message, pk, signature):
+def _verify(data, pk, signature):
     api_url = url + "/verify"
-    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={ 'message': message, 'pk': pk, 'signature': signature })
+    response = requests.post(api_url, headers={'Authorization': 'auth_token ' + os.environ.get('AUTH_TOKEN') }, json={ 'data': data, 'pk': pk, 'signature': signature })
     return response.json()['verified']
 
 def verify():
