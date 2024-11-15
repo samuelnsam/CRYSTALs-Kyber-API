@@ -31,7 +31,7 @@ python kyber_decrypt.py --help
 First, we need to generate the public-private keypair, run the following command:
 
 ```
-python kyber_keys.py -public public/public_key.txt -verif_signature signature/signature.txt -verif_key verif_key/verif_key.txt
+python kyber_keys.py -public public/public_key.txt -verif_signature signature/signature.txt -verif_key verif_key/verif_key.txt -secret secret/secret_key.txt
 ```
 
 Note: This commande will store the public key in the file `public_key.txt` that's inside the directory `public` and the private key will be stored in a secret place. It will also store the verification signature and the verification public key in the chosent paths. Feel free to change the arguments as needed.
